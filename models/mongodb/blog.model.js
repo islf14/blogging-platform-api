@@ -1,10 +1,9 @@
-import { MongoClient } from 'mongodb'
+import { MongoClient, ObjectId } from 'mongodb'
 
 const DEFAULT_CONFIG =
   'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8'
 
 const uri = process.env.URI_MONGODB ?? DEFAULT_CONFIG
-
 const client = new MongoClient(uri)
 
 async function connect() {
@@ -23,9 +22,11 @@ export class BlogModel {
   static async getAll() {
     const db = await connect()
     try {
-      return db.find({}).toArray()
+      const result = await db.find({}).toArray()
+      return result
     } catch (error) {
       console.log('Error getting all')
+      return false
     }
   }
 
@@ -34,5 +35,19 @@ export class BlogModel {
     const { insertedId } = await db.insertOne(input)
     console.log(insertedId)
     return insertedId
+  }
+
+  static async update({ id, input }) {
+    const db = await connect()
+    console.log(input)
+    try {
+      const oid = new ObjectId(id)
+      const result = await db.updateOne({ _id: oid }, { $set: input })
+      return result.acknowledged
+    } catch (error) {
+      console.log('id does not exist')
+      // console.log(error)
+      return false
+    }
   }
 }

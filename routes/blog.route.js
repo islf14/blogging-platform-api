@@ -7,6 +7,7 @@ export const createBlogRouter = () => {
 
   blogRouter.get('/', blogController.getAll)
   blogRouter.post('/', blogController.create)
+  blogRouter.patch('/:id', blogController.update)
 
   return blogRouter
 }
