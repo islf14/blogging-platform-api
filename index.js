@@ -7,10 +7,10 @@ const port = process.env.PORT ?? 3000
 app.disable('x-powered-by')
 
 app.use(json())
-app.use('/', createBlogRouter())
+app.use('/posts', createBlogRouter())
 
-app.get('/welcome', (req, res) => {
-  res.send('Hello World!')
+app.get('/', (req, res) => {
+  res.json('Welcome')
 })
 
 app.listen(port, () => {

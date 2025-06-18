@@ -6,26 +6,43 @@ export class BlogController {
 
   getAll = async (req, res) => {
     const blogs = await BlogModel.getAll()
-    return res.json(blogs)
+    if (blogs) return res.status(200).json(blogs)
+    else return res.status(400).json(blogs)
+  }
+
+  getById = async (req, res) => {
+    const { id } = req.params
+    const blog = await BlogModel.getById({ id })
+    if (blog) return res.status(200).json(blog)
+    else return res.status(400).json(blog)
   }
 
   // new blog
   create = async (req, res) => {
     const result = validateBlog(req.body)
     if (result.error) {
-      res.status(400).json({ error: JSON.parse(result.error.message) })
+      return res.status(400).json({ error: JSON.parse(result.error.message) })
     }
     const blog = await BlogModel.create({ input: result.data })
-    res.json(blog)
+    if (blog) return res.status(201).json(blog)
+    else return res.status(400).json(blog)
   }
 
   update = async (req, res) => {
     const result = validatePartialBlog(req.body)
     const { id } = req.params
     if (result.error) {
-      res.status(400).json({ error: JSON.parse(result.error.message) })
+      return res.status(400).json({ error: JSON.parse(result.error.message) })
     }
     const blog = await BlogModel.update({ id, input: result.data })
-    res.json(blog)
+    if (blog) return res.status(200).json(blog)
+    else return res.status(400).json(blog)
+  }
+
+  delete = async (req, res) => {
+    const { id } = req.params
+    const blog = await BlogModel.delete({ id })
+    if (blog) return res.status(200).json(blog)
+    else return res.status(400).json(blog)
   }
 }

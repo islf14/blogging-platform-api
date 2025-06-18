@@ -30,23 +30,58 @@ export class BlogModel {
     }
   }
 
+  static async getById({ id }) {
+    const db = await connect()
+    try {
+      const oid = new ObjectId(id)
+      const result = await db.findOne({ _id: oid })
+      return result
+    } catch (error) {
+      console.log('error find one')
+      return false
+    }
+  }
+
   static async create({ input }) {
     const db = await connect()
-    const { insertedId } = await db.insertOne(input)
-    console.log(insertedId)
-    return insertedId
+    const newPost = {
+      ...input,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+    try {
+      const { insertedId } = await db.insertOne(newPost)
+      return insertedId
+    } catch (error) {
+      console.log('error on create')
+      return false
+    }
   }
 
   static async update({ id, input }) {
     const db = await connect()
-    console.log(input)
+    const updatedPost = {
+      ...input,
+      updatedAt: new Date()
+    }
     try {
       const oid = new ObjectId(id)
-      const result = await db.updateOne({ _id: oid }, { $set: input })
+      const result = await db.updateOne({ _id: oid }, { $set: updatedPost })
       return result.acknowledged
     } catch (error) {
       console.log('id does not exist')
-      // console.log(error)
+      return false
+    }
+  }
+
+  static async delete({ id }) {
+    const db = await connect()
+    try {
+      const oid = new ObjectId(id)
+      const result = await db.deleteOne({ _id: oid })
+      return result.acknowledged
+    } catch (error) {
+      console.log('error on delete')
       return false
     }
   }
