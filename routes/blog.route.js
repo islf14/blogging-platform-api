@@ -8,7 +8,7 @@ export const createBlogRouter = () => {
   blogRouter.get('/', blogController.getAll)
   blogRouter.get('/:id', blogController.getById)
   blogRouter.post('/', blogController.create)
-  blogRouter.patch('/:id', blogController.update)
+  blogRouter.put('/:id', blogController.update)
   blogRouter.delete('/:id', blogController.delete)
 
   return blogRouter
